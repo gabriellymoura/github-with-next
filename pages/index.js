@@ -1,65 +1,56 @@
-import Head from 'next/head'
+import { Box, Heading, Flex, Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react'
 import styles from '../styles/Home.module.css'
+import useSWR from 'swr';
+import Head from 'next/head'
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+async function fetcher(...arg){
+  const res = await fetch(...arg);
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+  return res.json();
+}
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+const Home = () => {
+  
+  const {data} = useSWR('/api/github', fetcher);
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+  return(
+    <>
+    <Head>
+      <title>My Github States wih Next</title>
+    </Head>
+    <Box mt = {5}>
+      <Heading as ='h1' textAlign="center" size="2xl" mb={5} > My Github Stats</Heading>
+      <Flex justify = "center">
+        <Box w="300px" p={5} ml={8} mb={3} borderWidth='1px' roundedlg>
+          <Stat>
+            <StatLabel>
+              <Text fontSize = "xl">Github Stars</Text>
+            </StatLabel>
+            <StatNumber>{data ? data.stars: "Loading..."}</StatNumber>
+          </Stat>
+        </Box>
+        <Box w="300px" p={5} ml={8} mb={3} borderWidth='1px' roundedlg>
+          <Stat>
+            <StatLabel>
+              <Text fontSize = "xl">Github Followers</Text>
+            </StatLabel>
+            <StatNumber>{data ? data.followers: "Loading..."}</StatNumber>
+          </Stat>
+        </Box>
+        <Box w="300px" p={5} ml={8} mb={3} borderWidth='1px' roundedlg>
+          <Stat>
+            <StatLabel>
+              <Text fontSize = "xl">Repos Starred</Text>
+            </StatLabel>
+            <StatNumber>{data ? data.starred: "Loading..."}</StatNumber>
+          </Stat>
+        </Box>
+      </Flex>
+    </Box>
+  </>
   )
 }
+  
+
+
+export default Home;
